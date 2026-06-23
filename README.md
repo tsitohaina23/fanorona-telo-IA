@@ -20,9 +20,9 @@ https://ispm-edu.com
 
 ## - Section 2 : Description du Travail Réalisé
 
-1. Présentation globale de votre application et des fonctionnalités implémentées en 5 heures :
+1. Présentation globale de votre application et des fonctionnalités implémentées:
 
-2.Présentation de l'architecture et de la pile (stack) technologique utilisée :
+2. Présentation de l'architecture et de la pile (stack) technologique utilisée :
 
 3. Lien vers la version hébergée, le cas échéant :
 
