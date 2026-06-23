@@ -1,0 +1,12 @@
+/* Personnalisation légère de l'interface Streamlit */
+.stButton > button {
+    height: 80px;
+    font-size: 24px;
+    border-radius: 10px;
+    background-color: #f0f2f6;
+    transition: background-color 0.3s;
+}
+.stButton > button:hover {
+    background-color: #e0e2e6;
+    border-color: #ff4b4b;
+}
