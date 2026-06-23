@@ -10,12 +10,11 @@ https://ispm-edu.com
 
 | 		Nom Complet                       | Numéro d'étudiant |  Classe | Rôle précis pour ce hackathon |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
-| RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
+| RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 				                |
 | RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | 				                |
 | ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | 				                |
+| RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
 | TANG Fakanah Randy                              | 	   27	      | ESIIA 4 | 				                |
-| LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | 				                |
-| RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 				                |
 | LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | 				                |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
 

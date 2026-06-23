@@ -1,0 +1,19 @@
+# Environnements virtuels (L'erreur classique à bloquer absolument)
+.venv/
+venv/
+ENV/
+env/
+
+# Fichiers temporaires de cache Python (Générés automatiquement à chaque exécution)
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Fichiers de configuration des éditeurs (VS Code, PyCharm)
+.vscode/
+.idea/
+
+# Fichiers système inutiles
+.DS_Store
+Thumbs.db
