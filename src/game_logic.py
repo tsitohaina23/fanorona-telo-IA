@@ -1,84 +1,72 @@
 """
-MOTEUR DES RÈGLES DE JEU - FANORONA-TELO
-Gère les contraintes géométriques du plateau 3x3, la détection des alignements
-gagnants et les conditions de défaite par blocage total.
+LOGIQUE DU JEU & INFRASTRUCTURE BITBOARD (NATIVE)
 """
-import numpy as np
 
-def initialiser_plateau():
-    """
-    Crée une matrice NumPy 3x3 vide remplie de 0.
-    0 = Case vide, 1 = Pions du Joueur 1 (Noir), 2 = Pions du Joueur 2 / IA (Blanc)
-    """
-    return np.zeros((3, 3), dtype=int)
+# Représentation physique des lignes d'alignement sur 9 bits (indices de 0 à 8)
+MASQUES_ALIGNEMENT = [
+    0b000000111,  # Ligne Haute (0,1,2)
+    0b000011100,  # Ligne Milieu (3,4,5)
+    0b111000000,  # Ligne Basse (6,7,8)
+    0b001001001,  # Colonne Gauche (0,3,6)
+    0b010010010,  # Colonne Milieu (1,4,7)
+    0b100100100,  # Colonne Droite (2,5,8)
+    0b100010001,  # Diagonale Principale (0,4,8)
+    0b001010100,  # Diagonale Secondaire (2,4,6)
+]
 
+# Graphe des connexions physiques du Fanorona-telo pour la phase de mouvement
+ADJACENCES = {
+    0: [1, 3, 4],       1: [0, 2, 4],       2: [1, 4, 5],
+    3: [0, 4, 6],       4: [0, 1, 2, 3, 5, 6, 7, 8], # Le Centre connecte tout
+    5: [2, 4, 8],       6: [3, 4, 7],       7: [6, 8, 4],       8: [4, 5, 7]
+}
+
+def mat_to_idx(i, j):
+    return i * 3 + j
+
+def idx_to_mat(idx):
+    return idx // 3, idx % 3
 
 def verifier_alignement(plateau, joueur):
-    """
-    Vérifie si le joueur indiqué a aligné 3 pions sur une ligne physique du plateau.
-    Lignes autorisées : 3 Horizontales, 3 Verticales, 2 Grandes Diagonales croisées au centre.
-    """
-    arr = np.array(plateau)
-    
-    # 1. Alignements horizontaux (Lignes 0, 1, 2)
-    if any(np.all(arr[i, :] == joueur) for i in range(3)): 
-        return True
-        
-    # 2. Alignements verticaux (Colonnes 0, 1, 2)
-    if any(np.all(arr[:, j] == joueur) for j in range(3)): 
-        return True
-        
-    # 3. Grande Diagonale principale : (0,0) -> (1,1) -> (2,2)
-    if np.all(np.diag(arr) == joueur): 
-        return True
-        
-    # 4. Grande Diagonale secondaire : (0,2) -> (1,1) -> (2,0)
-    if np.all(np.diag(np.fliplr(arr)) == joueur): 
-        return True
-        
+    """Vérification classique par matrice pour l'interface."""
+    for i in range(3):
+        if plateau[i][0] == joueur and plateau[i][1] == joueur and plateau[i][2] == joueur: return True
+    for j in range(3):
+        if plateau[0][j] == joueur and plateau[1][j] == joueur and plateau[2][j] == joueur: return True
+    if plateau[0][0] == joueur and plateau[1][1] == joueur and plateau[2][2] == joueur: return True
+    if plateau[0][2] == joueur and plateau[1][1] == joueur and plateau[2][0] == joueur: return True
     return False
 
-
-def est_mouvement_valide(de_i, de_j, vers_i, vers_j):
-    """
-    Vérifie la légalité d'un déplacement sur la grille géométrique :
-    - Distance maximale d'une seule case (pas de saut).
-    - Interdiction des diagonales depuis les milieux des bords (0,1), (1,0), (1,2), (2,1)
-      car ces intersections n'ont pas de lignes diagonales tracées physiquement.
-    """
-    diff_i = abs(de_i - vers_i)
-    diff_j = abs(de_j - vers_j)
-    
-    # Règle 1 : Distance de déplacement limitée à 1 case maximum (et interdiction du surplace)
-    if diff_i > 1 or diff_j > 1 or (de_i == vers_i and de_j == vers_j):
-        return False
-        
-    # Règle 2 : Restriction stricte des mouvements diagonaux
-    # Les intersections centrales des bords n'ont pas de lignes diagonales reliées.
-    positions_sans_diagonale = [(0, 1), (1, 0), (1, 2), (2, 1)]
-    
-    if diff_i == 1 and diff_j == 1:  # Tentative de déplacement en diagonale
-        if (de_i, de_j) in positions_sans_diagonale or (vers_i, vers_j) in positions_sans_diagonale:
-            return False
-            
-    return True
-
+def est_mouvement_valide(oi, oj, ni, nj):
+    """Vérifie l'adjacence stricte selon la grille topologique du Fanorona-telo."""
+    orig = mat_to_idx(oi, oj)
+    dest = mat_to_idx(ni, nj)
+    return dest in ADJACENCES[orig]
 
 def est_bloque(plateau, joueur):
-    """
-    Analyse si le joueur est totalement immobilisé sur la grille.
-    Parcourt ses pions et vérifie s'il existe au moins une case vide (0) adjacente et légale.
-    """
+    """Indique si un joueur ne peut plus bouger aucun de ses pions."""
     for i in range(3):
         for j in range(3):
             if plateau[i][j] == joueur:
-                # Analyse des 8 directions adjacentes autour du pion
-                for di in [-1, 0, 1]:
-                    for dj in [-1, 0, 1]:
-                        ni, nj = i + di, j + dj
-                        # Rester dans les limites du plateau 3x3
-                        if 0 <= ni < 3 and 0 <= nj < 3:
-                            # S'il y a un emplacement vide et accessible selon le tracé
-                            if plateau[ni][nj] == 0 and est_mouvement_valide(i, j, ni, nj):
-                                return False  # Le joueur a au moins un coup jouable, il n'est pas bloqué
-    return True  # Aucun coup possible pour l'ensemble de ses pions
+                idx_orig = mat_to_idx(i, j)
+                for idx_dest in ADJACENCES[idx_orig]:
+                    ni, nj = idx_to_mat(idx_dest)
+                    if plateau[ni][nj] == 0:
+                        return False
+    return True
+
+# --- FONCTIONS BITBOARD POUR LA SECTION 5 ---
+def conversion_plateau_vers_bitboards(plateau):
+    b1, b2 = 0, 0
+    idx = 0
+    for i in range(3):
+        for j in range(3):
+            if plateau[i][j] == 1: b1 |= (1 << idx)
+            elif plateau[i][j] == 2: b2 |= (1 << idx)
+            idx += 1
+    return b1, b2
+
+def verifier_alignement_bitboard(b_joueur):
+    for m in MASQUES_ALIGNEMENT:
+        if (b_joueur & m) == m: return True
+    return False

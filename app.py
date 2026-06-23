@@ -1,14 +1,14 @@
-"""
-POINT D'ENTRÉE PRINCIPAL - FANORONA-TELO IA
-"""
 import streamlit as st
 from src.ui_components import render_interface
 
 st.set_page_config(page_title="Fanoron-telo avec IA", layout="centered")
 
-# Initialisation stricte et propre sans émojis ni espaces cachés
+# Initialisations globales indispensables
 if "mode_jeu" not in st.session_state:
     st.session_state.mode_jeu = "Humain vs Machine"
+
+if "difficulte_ia" not in st.session_state:
+    st.session_state.difficulte_ia = "Difficile"  # Choix : Facile, Moyenne, Difficile
 
 if "plateau" not in st.session_state:
     st.session_state.plateau = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -17,7 +17,7 @@ if "phase" not in st.session_state:
     st.session_state.phase = "Placement"
 
 if "tour" not in st.session_state:
-    st.session_state.tour = 1  # 1 = Joueur 1 (Noir), 2 = Joueur 2 / IA (Blanc)
+    st.session_state.tour = 1  # 1 = Humain (Noir), 2 = IA / Second Joueur (Blanc)
 
 if "pions_places" not in st.session_state:
     st.session_state.pions_places = 0
