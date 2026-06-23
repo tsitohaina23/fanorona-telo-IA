@@ -1,14 +1,14 @@
 ## - Section 1 : En-tête institutionnel et Identification
 
-1. Lien hypertexte vers le site officiel de l'institut :
+### 1. Lien hypertexte vers le site officiel de l'institut :
 https://ispm-edu.com
 
-2. Nom du groupe de projet :
+### 2. Nom du groupe de projet :
 
 
-3. Tableau listant les membres de l'équipe :
+### 3. Tableau listant les membres de l'équipe :
 
-| 		Nom Complet                       | Numéro d'étudiant |  Classe | Rôle précis pour ce hackathon |
+| 		**Nom Complet**                       | **Numéro d'étudiant** |  **Classe** | **Rôle précis pour ce hackathon** |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
 | RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 				                |
 | RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | 				                |
