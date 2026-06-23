@@ -40,4 +40,4 @@ render_interface()
 
 # Pied de page informatif
 st.markdown("---")
-st.caption("Développé en 5 heures par l'équipe. ISPM 2026.")
+st.caption("Développé en 5 heures par l'équipe. ISPM 2026.")    
