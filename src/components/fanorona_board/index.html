@@ -17,7 +17,6 @@
             overflow: hidden;
         }
 
-        /* L'arène fixe */
         .arena-container {
             position: relative;
             width: 340px;
@@ -33,19 +32,12 @@
             padding: 15px;
         }
 
-        /* Lignes de fond du plateau */
         .line-overlay {
             position: absolute;
             top: 15px; left: 15px; right: 15px; bottom: 15px;
             pointer-events: none;
             z-index: 1;
         }
-        .line {
-            position: absolute;
-            background-color: #4a2e1b;
-        }
-        .line.h-mid { top: 50%; left: 0; right: 0; height: 4px; transform: translateY(-50%); }
-        .line.v-mid { left: 50%; top: 0; bottom: 0; width: 4px; transform: translateX(-50%); }
         
         .inner-square {
             position: absolute;
@@ -53,12 +45,12 @@
             border: 4px solid #4a2e1b;
             box-sizing: border-box;
         }
-        
-        /* Croix diagonales */
+        .line { position: absolute; background-color: #4a2e1b; }
+        .line.h-mid { top: 50%; left: 0; right: 0; height: 4px; transform: translateY(-50%); }
+        .line.v-mid { left: 50%; top: 0; bottom: 0; width: 4px; transform: translateX(-50%); }
         .diag1 { position: absolute; top: 0; left: 0; width: 141.4%; height: 4px; background: #4a2e1b; transform: rotate(45deg); transform-origin: top left; }
         .diag2 { position: absolute; top: 0; right: 0; width: 141.4%; height: 4px; background: #4a2e1b; transform: rotate(-45deg); transform-origin: top right; }
 
-        /* Noeuds d'intersections cliquables */
         .intersection-node {
             position: relative;
             z-index: 10;
@@ -70,20 +62,30 @@
             height: 100%;
         }
 
-        /* Design Premium Effet Céramique des Pions */
         .pion {
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            transition: transform 0.1s ease;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
             box-shadow: 0 5px 8px rgba(0,0,0,0.3), inset 0 -4px 6px rgba(0,0,0,0.25);
         }
         .pion:hover { transform: scale(1.12); }
         .pion.joueur1 { background: radial-gradient(circle at 30% 30%, #404040, #111); border: 2px solid #000; }
         .pion.joueur2 { background: radial-gradient(circle at 30% 30%, #ffffff, #ccc); border: 2px solid #aaa; }
-        .pion.selected { border: 3px solid #ffcc00; box-shadow: 0 0 15px #ffcc00, 0 5px 8px rgba(0,0,0,0.3); }
         
-        /* Intersections vides */
+        /* Animation d'illumination instantanée lors de la sélection */
+        .pion.selected { 
+            border: 3px solid #ffcc00; 
+            box-shadow: 0 0 18px #ffcc00, 0 5px 8px rgba(0,0,0,0.3);
+            transform: scale(1.08);
+        }
+        
+        /* Effet visuel au clic immédiat avant la réponse Streamlit */
+        .pion:active {
+            filter: brightness(1.3);
+            box-shadow: 0 0 20px #ff9900;
+        }
+
         .vide {
             width: 16px;
             height: 16px;
@@ -93,6 +95,11 @@
             transition: all 0.1s;
         }
         .intersection-node:hover .vide { background-color: #ff9900; transform: scale(1.3); }
+        /* Illumination instantanée d'une case vide au clic */
+        .intersection-node:active .vide {
+            background-color: #ffcc00;
+            box-shadow: 0 0 12px #ffcc00;
+        }
     </style>
 </head>
 <body>
@@ -109,16 +116,22 @@
 
     <script src="./streamlit-component-lib.js"></script>
     <script>
-        // Drapeau indispensable pour bloquer la boucle infinie de rendu
         let heightSet = false;
 
-        function sendToStreamlit(row, col) {
+        function sendToStreamlit(row, col, element) {
+            // OPTIMISATION : Si l'élément contient un pion, on lui applique immédiatement
+            // effet visuel pour éviter la sensation de latence réseau
+            const pion = element.querySelector('.pion');
+            if (pion) {
+                pion.classList.add('selected');
+            }
             Streamlit.setComponentValue({row: row, col: col});
         }
 
-        function onRender(data) {
-            if (!data) return;
+        function onRender(event) {
+            if (!event.detail || !event.detail.args) return;
             
+            const data = event.detail.args;
             const plateau = data.plateau;
             const selected = data.pion_selectionne;
             
@@ -127,17 +140,15 @@
             const arena = document.getElementById("arena");
             if (!arena) return;
 
-            // Nettoyage propre des anciens nœuds
             const oldNodes = arena.querySelectorAll(".intersection-node");
             oldNodes.forEach(n => n.remove());
 
-            // Régénération dynamique de la matrice 3x3
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
                     const cellValue = plateau[i][j];
                     const node = document.createElement("div");
                     node.className = "intersection-node";
-                    node.onclick = () => sendToStreamlit(i, j);
+                    node.onclick = () => sendToStreamlit(i, j, node);
 
                     if (cellValue === 1) {
                         const pion = document.createElement("div");
@@ -162,17 +173,15 @@
                 }
             }
 
-            // FIX BOUCLE INFINIE : On ne définit la hauteur qu'une seule fois au départ
             if (!heightSet) {
                 Streamlit.setFrameHeight(360);
                 heightSet = true;
             }
         }
 
-        // Écouteur de message compatible avec votre version de streamlit-component-lib.js
         window.addEventListener("message", (e) => {
             if (e.data.type === "streamlit:render") {
-                onRender(e.data.args);
+                onRender({ detail: { args: e.data.args } });
             }
         });
     </script>

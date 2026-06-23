@@ -1,17 +1,24 @@
 Structures dossiers:
-fanoron-telo-ia/
+fanorona-telo-ia/
 │
-├── assets/               # Images, icônes des pions, style CSS
+├── assets/                     # Fichiers statiques globaux
 │   └── style.css
 │
-├── src/                  # Tout le code source est rangé ici
-│   ├── game_logic.py     # Règles du jeu et plateau
-│   ├── ia_engine.py      # Algorithmes IA (Minimax / Alpha-Beta)
-│   └── ui_components.py  # Éléments visuels Streamlit
+├── src/                        # Tout le code source applicatif
+│   ├── __init__.py
+│   ├── game_logic.py           # Logique pure des règles (Mouvements, Alignements, Victoires)
+│   ├── ia_engine.py            # Moteur IA (Calcul des scores, Minimax/Alpha-Beta)
+│   ├── ui_components.py        # Structure de la page, menus déroulants et synchronisation
+│   │
+│   └── components/             # Zone des composants frontend personnalisés
+│       └── fanorona_board/
+│           ├── __init__.py     # Déclaration / Pont Python du composant
+│           ├── index.html      # Rendu visuel Premium et interactions JS rapides
+│           └── streamlit-component-lib.js # Communication Streamlit-JS
 │
-├── app.py                # Point d'entrée principal (à la racine)
-├── README.md             # Rapport obligatoire (6 sections)
-└── requirements.txt      # Dépendances du projet
+├── app.py                      # Point d'entrée de l'application Streamlit (Racine)
+├── README.md                   # Rapport obligatoire de l'évaluation
+└── requirements.txt            # Liste des dépendances (Streamlit, Pandas, etc.)
 
 cree une environnement .env en locla avec commande:
 python -m venv .venv
