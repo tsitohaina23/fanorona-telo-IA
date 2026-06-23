@@ -109,29 +109,29 @@
 
     <script src="./streamlit-component-lib.js"></script>
     <script>
+        // Drapeau indispensable pour bloquer la boucle infinie de rendu
+        let heightSet = false;
+
         function sendToStreamlit(row, col) {
             Streamlit.setComponentValue({row: row, col: col});
         }
 
-        function onRender(event) {
-            // 1. SÉCURITÉ : Vérifier si l'événement contient bien les arguments attendus
-            if (!event.detail || !event.detail.args) return;
+        function onRender(data) {
+            if (!data) return;
             
-            const data = event.detail.args;
             const plateau = data.plateau;
             const selected = data.pion_selectionne;
             
-            // 2. SÉCURITÉ : Si le plateau n'est pas encore transmis par Python, on stoppe proprement
             if (!plateau || !plateau[0]) return;
 
             const arena = document.getElementById("arena");
             if (!arena) return;
 
-            // Nettoyage complet avant réaffichage (uniquement les anciens noeuds)
+            // Nettoyage propre des anciens nœuds
             const oldNodes = arena.querySelectorAll(".intersection-node");
             oldNodes.forEach(n => n.remove());
 
-            // Génération dynamique de la matrice 3x3
+            // Régénération dynamique de la matrice 3x3
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
                     const cellValue = plateau[i][j];
@@ -149,6 +149,9 @@
                     } else if (cellValue === 2) {
                         const pion = document.createElement("div");
                         pion.className = "pion joueur2";
+                        if (selected && selected[0] === i && selected[1] === j) {
+                            pion.classList.add("selected");
+                        }
                         node.appendChild(pion);
                     } else {
                         const vide = document.createElement("div");
@@ -158,13 +161,18 @@
                     arena.appendChild(node);
                 }
             }
-            // Fixe la hauteur de la frame pour couper la zone blanche
-            Streamlit.setFrameHeight(360);
+
+            // FIX BOUCLE INFINIE : On ne définit la hauteur qu'une seule fois au départ
+            if (!heightSet) {
+                Streamlit.setFrameHeight(360);
+                heightSet = true;
+            }
         }
 
+        // Écouteur de message compatible avec votre version de streamlit-component-lib.js
         window.addEventListener("message", (e) => {
             if (e.data.type === "streamlit:render") {
-                onRender({ detail: { args: e.data.args } });
+                onRender(e.data.args);
             }
         });
     </script>
