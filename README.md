@@ -26,7 +26,7 @@ https://ispm-edu.com
 
 3. Lien vers la version hébergée, le cas échéant :
 
-- Section 3 : Guide d'Installation Rapide
+## - Section 3 : Guide d'Installation Rapide
 
 . Procédure pas-à-pas pour cloner, installer les dépendances et lancer l'application en local :
 
