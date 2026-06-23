@@ -1,4 +1,4 @@
-- Section 1 : En-tête institutionnel et Identification
+## - Section 1 : En-tête institutionnel et Identification
 
 1. Lien hypertexte vers le site officiel de l'institut :
 https://ispm-edu.com
@@ -18,7 +18,7 @@ https://ispm-edu.com
 | LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | 				                |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
 
-- Section 2 : Description du Travail Réalisé
+## - Section 2 : Description du Travail Réalisé
 
 1. Présentation globale de votre application et des fonctionnalités implémentées en 5 heures :
 
@@ -30,13 +30,13 @@ https://ispm-edu.com
 
 . Procédure pas-à-pas pour cloner, installer les dépendances et lancer l'application en local :
 
-- Section 4 : Outils d'Aide IA Utilisés
+## - Section 4 : Outils d'Aide IA Utilisés
 
 1. Explication de la manière dont votre équipe a exploité les assistants IA (ex. GitHub Copilot, ChatGPT, Claude, etc.) pour accélérer le développement :
 
 2. Exemples d'utilisation (écriture d'algorithmes, génération de tests rapides, débogage, CSS, génération d'images, génération de documentation) et retour d'expérience sur le gain de temps obtenu.
 
-- Section 5 : Modélisation et Algorithmes de l'IA du Jeu
+## - Section 5 : Modélisation et Algorithmes de l'IA du Jeu
 
 1. Explication scientifique de l'intelligence artificielle que vous avez conçue et implémentée :
 
@@ -56,7 +56,7 @@ https://ispm-edu.com
 
 	5. Machine Learning : Rote learning (mémorisation/indexation), modèle de classification, Q-Learning...
 
-- Section 6 : Analyses de Performances
+## - Section 6 : Analyses de Performances
 
 1. Temps de réponse moyen de l'IA (en millisecondes) lors de la recherche du meilleur coup : 
 
