@@ -83,4 +83,19 @@ En résumé, notre IA combine recherche, évaluation heuristique et optimisation
 
 2. Résultats ou statistiques des affrontements IA contre IA (ex. l'IA difficile bat-elle l'IA moyenne dans 100% des cas ?) : l'IA difficile bat l'IA moyenne dans 100% des cas car l'IA difficile utilise une profondeur de **niveau 7** pour gagner tandis que l'IA moyenne est **entre 3 a 5 seulement**
 
-3. D'autres métriques liées aux éventuelles techniques avancées utilisées :
+3. D'autres métriques liées aux éventuelles techniques avancées utilisées :<br>
+**Option A : Si IA utilise Minimax avec l'Élagage Alpha-Bêta** <br>
+
+L'élagage Alpha-Bêta sert à couper les branches inutiles de l'arbre de décision pour gagner du temps. C'est l'algorithme classique par excellence pour le Fanorona Telo.
+
+- Nombre de nœuds explorés : Mesure la taille totale de l'arbre analysé par l'IA.
+- Nombre d'élagages (Cut-offs) : Le nombre de fois où l'algorithme a dit : « Ce coup est trop mauvais, inutile d'analyser la suite ». Plus ce chiffre est élevé, plus ton algorithme est efficace.
+- Profondeur maximale atteinte : Utile si tu utilises un algorithme à profondeur itérative (Iterative Deepening).<br>
+
+**Option B : Si ton IA utilise du Machine Learning / Deep Learning (Option "ML")**<br>
+
+Comme on a une option "ML" dans ton sélecteur de difficulté, si cette partie utilise un modèle entraîné (ex. réseau de neurones, Q-Learning ou un classifieur), les métriques doivent évaluer la confiance du modèle.
+
+- Taux d'exploration vs exploitation (ε-greedy) : Si tu fais de l'apprentissage par renforcement (Reinforcement Learning), cela montre si l'IA teste de nouvelles tactiques ou applique ce qu'elle sait.
+- Entropie de la politique (Policy Entropy) : Mesure l'incertitude de l'IA. Une entropie proche de 0 signifie que l'IA est ultra-confiante de son coup. Une entropie élevée signifie que plusieurs coups se valent à ses yeux.
+- Score de valeur d'état (State-Value / V(s)) : L'estimation par l'IA de ses chances de victoire sur une échelle de −1 (défaite certaine) à +1 (victoire certaine).
