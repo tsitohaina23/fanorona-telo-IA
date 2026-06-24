@@ -84,6 +84,7 @@ En résumé, notre IA combine recherche, évaluation heuristique et optimisation
 2. Résultats ou statistiques des affrontements IA contre IA (ex. l'IA difficile bat-elle l'IA moyenne dans 100% des cas ?) : l'IA difficile bat l'IA moyenne dans 100% des cas car l'IA difficile utilise une profondeur de **niveau 7** pour gagner tandis que l'IA moyenne est **entre 3 a 5 seulement**
 
 3. D'autres métriques liées aux éventuelles techniques avancées utilisées :<br>
+
 **Option A : Si IA utilise Minimax avec l'Élagage Alpha-Bêta** <br>
 
 L'élagage Alpha-Bêta sert à couper les branches inutiles de l'arbre de décision pour gagner du temps. C'est l'algorithme classique par excellence pour le Fanorona Telo.
