@@ -80,8 +80,8 @@ Notre équipe a principalement exploité **Gemini** comme assistant IA afin d’
 
 ## - Section 6 : Analyses de Performances
 
-1. Temps de réponse moyen de l'IA (en millisecondes) lors de la recherche du meilleur coup : 
+1. Temps de réponse moyen de l'IA (en millisecondes) lors de la recherche du meilleur coup : **32ms**
 
-2. Résultats ou statistiques des affrontements IA contre IA (ex. l'IA difficile bat-elle l'IA moyenne dans 100% des cas ?) :
+2. Résultats ou statistiques des affrontements IA contre IA (ex. l'IA difficile bat-elle l'IA moyenne dans 100% des cas ?) : l'IA difficile bat l'IA moyenne dans 100% des cas car l'IA difficile utilise une profondeur de **niveau 7** pour gagner tandis que l'IA moyenne est **entre 3 a 5 seulement**
 
 3. D'autres métriques liées aux éventuelles techniques avancées utilisées :
