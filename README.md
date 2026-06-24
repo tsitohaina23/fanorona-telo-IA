@@ -3,7 +3,7 @@
 ### 1. Lien hypertexte vers le site officiel de l'institut :
 https://ispm-edu.com
 
-### 2. Nom du groupe de projet :
+### 2. Nom du groupe de projet : **Lemurien-Codeur**
 
 
 ### 3. Tableau listant les membres de l'équipe :
@@ -20,11 +20,26 @@ https://ispm-edu.com
 
 ## - Section 2 : Description du Travail Réalisé
 
-1. Présentation globale de votre application et des fonctionnalités implémentées:
+### 1. Présentation globale de votre application et des fonctionnalités implémentées:<br>
+**1. Le Contexte** <br>
+Le **Fanoron-telo** est un jeu de société traditionnel originaire de Madagascar. Se jouant sur un plateau de 3x3 intersections connectées avec 3 pions par joueur, il propose des règles simples mais une profondeur tactique propice à l’optimisation algorithmique.<br>
 
-2. Présentation de l'architecture et de la pile (stack) technologique utilisée :
+**2. Règles du Jeu**<br>
+Le plateau comprend 9 intersections. Chaque joueur possède 3 pions.<br>
 
-3. Lien vers la version hébergée, le cas échéant :
+* **Phase 1 (Placement)** : Les joueurs posent un pion à tour de rôle sur une intersection libre. Si un joueur aligne ses 3 pions (ligne, colonne ou diagonale) pendant cette phase, il gagne immédiatement.<br>
+* **Phase 2 (Mouvement)** : Si aucun alignement n’est fait après la pose des 6 pions, chacun déplace à tour de rôle un pion vers une intersection adjacente libre en suivant les lignes. Le premier qui aligne ses 3 pions gagne.<br>
+
+**3. Objectifs et Fonctionnalités Attendues**<br>
+Dans le cadre de ce hackathon, les fonctionnalités sont classées par priorité :<br>
+
+* **Priorité 1** : Mode Humain vs Humain en local + Mode Humain vs IA (Niveau Facile/Moyen) + Gestion robuste des règles du jeu.<br>
+* **Priorité 2** : Mode IA vs IA (Mode Démo) + IA Difficile (Alpha-Beta optimisé) + Déploiement/Hébergement en ligne.<br>
+* **Priorité 3** : Option d’annulation de coup (*Undo/Redo*), design d’interface soigné, animations.<br>
+
+### 2. Présentation de l'architecture et de la pile (stack) technologique utilisée :
+
+### 3. Lien vers la version hébergée, le cas échéant :
 
 ## - Section 3 : Guide d'Installation Rapide
 
@@ -32,7 +47,7 @@ https://ispm-edu.com
 
 ## - Section 4 : Outils d'Aide IA Utilisés
 
-1. Explication de la manière dont votre équipe a exploité les assistants IA (ex. GitHub Copilot, ChatGPT, Claude, etc.) pour accélérer le développement :
+1. Explication de la manière dont votre équipe a exploité les assistants IA (ex. GitHub Copilot, ChatGPT, Claude, etc.) pour accélérer le développement : 
 
 2. Exemples d'utilisation (écriture d'algorithmes, génération de tests rapides, débogage, CSS, génération d'images, génération de documentation) et retour d'expérience sur le gain de temps obtenu.
 
