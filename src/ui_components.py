@@ -7,6 +7,7 @@ import time
 from src.components.fanorona_board import fanorona_board 
 from src.game_logic import verifier_alignement, est_mouvement_valide, est_bloque
 from src.ia_engine import simuler_calcul_ia
+from src.history import push_history, undo_state, redo_state
 
 def render_interface():
     options_jeux = ["Humain vs Machine", "Humain vs Humain", "IA vs IA"]
@@ -73,6 +74,27 @@ def render_interface():
     if "dernier_coup_traite" not in st.session_state:
         st.session_state.dernier_coup_traite = None
 
+    if "history" not in st.session_state:
+        st.session_state.history = []
+
+    if "redo_stack" not in st.session_state:
+        st.session_state.redo_stack = []
+
+    if not st.session_state.history:
+        push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
+
+    st.markdown("### 🎮 Contrôles de partie")
+    st.caption("Annulez ou refaites un coup à tout moment.")
+    col_left, col_right = st.columns([1, 1])
+    with col_left:
+        if st.button("↺ Annuler le dernier coup", use_container_width=True, disabled=len(st.session_state.history) <= 1):
+            if undo_state(st.session_state, st.session_state.history, st.session_state.redo_stack):
+                st.rerun()
+    with col_right:
+        if st.button("↻ Refaire le coup", use_container_width=True, disabled=not st.session_state.redo_stack):
+            if redo_state(st.session_state, st.session_state.history, st.session_state.redo_stack):
+                st.rerun()
+
     # RENDU DU CANVAS GRAPHIC
     coup_joueur = fanorona_board(
         plateau=st.session_state.plateau,
@@ -137,6 +159,7 @@ def render_interface():
         humain = st.session_state.tour
 
         if st.session_state.phase == "Placement" and valeur_case == 0:
+            push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
             st.session_state.plateau[i][j] = humain
             st.session_state.pions_places += 1
             if verifier_alignement(st.session_state.plateau, humain):
@@ -157,6 +180,7 @@ def render_interface():
             elif valeur_case == 0 and selection:
                 oi, oj = selection
                 if est_mouvement_valide(oi, oj, i, j):
+                    push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
                     st.session_state.plateau[oi][oj] = 0
                     st.session_state.plateau[i][j] = humain
                     st.session_state.pion_selectionne = None
