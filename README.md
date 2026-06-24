@@ -37,7 +37,10 @@ Dans le cadre de ce hackathon, les fonctionnalités sont classées par priorité
 * **Priorité 2** : Mode IA vs IA (Mode Démo) + IA Difficile (Alpha-Beta optimisé) + Déploiement/Hébergement en ligne.<br>
 * **Priorité 3** : Option d’annulation de coup (*Undo/Redo*), design d’interface soigné, animations.<br>
 
-### 2. Présentation de l'architecture et de la pile (stack) technologique utilisée :
+### 2. Présentation de l'architecture et de la pile (stack) technologique utilisée :<br>
+
+Le projet **Fanoron-telo avec IA** a été développé en **Python**, un langage de programmation adapté à la conception d’algorithmes et à l’implémentation de l’intelligence artificielle. L’interface utilisateur ainsi que l’exécution de l’application ont été réalisées avec **Streamlit**, un framework Python permettant de créer rapidement des applications web interactives. Pour le déploiement et l’hébergement, nous avons utilisé **Streamlit Community Cloud**, ce qui permet d’exécuter le jeu directement depuis un navigateur sans nécessiter d’installation locale. Cette architecture simple et légère facilite le développement, la maintenance et l’accessibilité de l’application.
+
 
 ### 3. Lien vers la version hébergée, le cas échéant :
 
