@@ -11,11 +11,11 @@ https://ispm-edu.com
 | 		**Nom Complet**                       | **Numéro d'étudiant** |  **Classe** | **Rôle précis pour ce hackathon** |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
 | RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 			Tech Lead	                |
-| RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | 				                |
+| RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | Développeur Backend et Développeur IA                |
 | ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | Integration de l'algorithme ML				                |
 | RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
 | TANG Fakanah Randy                              | 	   27	      | ESIIA 4 | 				                |
-| LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | 				                |
+| LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | Développeur IA                |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
 
 ## - Section 2 : Description du Travail Réalisé
