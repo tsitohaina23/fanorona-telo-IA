@@ -62,21 +62,20 @@ Notre équipe a principalement exploité **Gemini** comme assistant IA afin d’
 
 ### Explication scientifique de l'intelligence artificielle que nous avons conçue et implémentée :
 
-   Notre IA a été conçue comme un moteur de recherche adversariale capable de choisir les meilleurs coups à partir de l'état courant du plateau. Les niveaux Facile et Moyen reposent sur une logique de recherche simple, tandis que le niveau Difficile combine Minimax, Alpha-Beta et une représentation par bitboards pour accélérer le calcul et améliorer la qualité des décisions. Le mode ML complète cette approche par une mémoire de certains états déjà rencontrés, ce qui permet à l'IA de réagir plus efficacement dans des situations similaires.
+Notre IA a été conçue comme un moteur de recherche adversariale capable de choisir les meilleurs coups à partir de l'état courant du plateau. Les niveaux Facile et Moyen reposent sur une logique de recherche simple, tandis que le niveau Difficile combine Minimax, Alpha-Beta et une représentation par bitboards pour accélérer le calcul et améliorer la qualité des décisions. Le mode ML complète cette approche par une mémoire de certains états déjà rencontrés, ce qui permet à l'IA de réagir plus efficacement dans des situations similaires.
 
-### Représentation de l'état du plateau :
-      Le plateau est représenté sous forme de matrice 3x3 où chaque case peut contenir un pion libre, un pion du joueur 1 ou un pion du joueur 2. Pour améliorer la rapidité des calculs, cette structure est également encodée sous forme de bitboards, ce qui facilite la détection des alignements et l'évaluation des positions.
+### Représentation de l'état du plateau :<br>
+Le plateau est représenté sous forme de matrice 3x3 où chaque case peut contenir un pion libre, un pion du joueur 1 ou un pion du joueur 2. Pour améliorer la rapidité des calculs, cette structure est également encodée sous forme de bitboards, ce qui facilite la détection des alignements et l'évaluation des positions.
 
-### Fonctionnement du Minimax et de la fonction d'évaluation :
-      Le Minimax explore les différentes branches possibles du jeu en supposant que chaque joueur joue de manière optimale. À chaque profondeur, l'algorithme attribue une valeur à une position selon sa qualité pour le joueur courant. Cette évaluation repose sur plusieurs critères : la présence d'alignements potentiels, les menaces immédiates, le contrôle des cases clés et la possibilité de bloquer l'adversaire. L'élagage Alpha-Beta réduit ensuite le nombre de branches à explorer sans diminuer significativement la qualité du choix.
+### Fonctionnement du Minimax et de la fonction d'évaluation :<br>
+Le Minimax explore les différentes branches possibles du jeu en supposant que chaque joueur joue de manière optimale. À chaque profondeur, l'algorithme attribue une valeur à une position selon sa qualité pour le joueur courant. Cette évaluation repose sur plusieurs critères : la présence d'alignements potentiels, les menaces immédiates, le contrôle des cases clés et la possibilité de bloquer l'adversaire. L'élagage Alpha-Beta réduit ensuite le nombre de branches à explorer sans diminuer significativement la qualité du choix.
 
 ### Techniques avancées utilisées :
-      - Alpha-Beta pruning : optimisation du Minimax pour éviter de parcourir des branches inutiles.
-      - Bitboards : représentation compacte des pions sous forme de bits pour une évaluation plus rapide.
-      - Rote learning : mémoire simple utilisée dans le mode ML pour retenir certains états rencontrés et améliorer les décisions futures.
-      - Recherche en profondeur limitée : adaptation du temps de calcul selon le niveau de difficulté choisi.
-
-   En résumé, notre IA combine recherche, évaluation heuristique et optimisation algorithmique pour proposer des coups cohérents, rapides et stratégiques tout au long de la partie.
+- Alpha-Beta pruning : optimisation du Minimax pour éviter de parcourir des branches inutiles.
+- Bitboards : représentation compacte des pions sous forme de bits pour une évaluation plus rapide.
+- Rote learning : mémoire simple utilisée dans le mode ML pour retenir certains états rencontrés et améliorer les décisions futures.
+- Recherche en profondeur limitée : adaptation du temps de calcul selon le niveau de difficulté choisi.<br>
+En résumé, notre IA combine recherche, évaluation heuristique et optimisation algorithmique pour proposer des coups cohérents, rapides et stratégiques tout au long de la partie.
 
 ## - Section 6 : Analyses de Performances
 
