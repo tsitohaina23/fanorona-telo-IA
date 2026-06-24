@@ -8,15 +8,16 @@ https://ispm-edu.com
 
 ### 3. Tableau listant les membres de l'équipe :
 
-| 		**Nom Complet**                       | **Numéro d'étudiant** |  **Classe** | **Rôle précis pour ce hackathon** |
-|-------------------------------------------------|-------------------|---------|-------------------------------|
-| RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 			Tech Lead	                |
-| RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | 				                |
-| ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | Integration de l'algorithme ML				                |
-| RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
-| TANG Fakanah Randy                              | 	   27	      | ESIIA 4 | 				                |
-| LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | 				                |
-|-------------------------------------------------|-------------------|---------|-------------------------------|
+| 		**Nom Complet**                       | **Numéro d'étudiant** |  **Classe** | **Rôle précis pour ce hackathon** 	|
+|-------------------------------------------------|-------------------|-------------|---------------------------------------|
+| RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 	| 			Tech Lead	                |
+| RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 	| 				                		|
+| ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 	| Integration de l'algorithme ML		|
+| RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 	| dev-front				                |
+| TANG Fakanah Randy                              | 	   27	      | ESIIA 4 	| 				                		|
+| LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 	| 				                		|
+| Razafimanantsoa Betina                   		  | 	   23	      | ESIIA 4 	| 				                		|
+|-------------------------------------------------|-------------------|-------------|---------------------------------------|
 
 ## - Section 2 : Description du Travail Réalisé
 
@@ -25,6 +26,7 @@ https://ispm-edu.com
 2. Présentation de l'architecture et de la pile (stack) technologique utilisée :
 
 3. Lien vers la version hébergée, le cas échéant :
+https://drive.google.com/file/d/1SluygrtcQDmPGpNFeCKxJbrHn99tou8r/view?usp=sharing
 
 ## - Section 3 : Guide d'Installation Rapide
 
