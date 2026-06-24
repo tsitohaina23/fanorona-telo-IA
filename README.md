@@ -13,7 +13,7 @@ https://ispm-edu.com
 | RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 			Tech Lead	                |
 | RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | Développeur Backend et Développeur IA                |
 | ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | Integration de l'algorithme ML				                |
-| RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
+| RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 			Développeur Frontend	                |
 | TANG Fakanah Randy                              | 	   27	      | ESIIA 4 | 				                |
 | LEONARD Jamaviston Lucas                        | 	   36	      | ESII A 4| Développeur IA                |
 |Razafimanantsoa Betina							|			23			|	ESII A 4|Vérification final			|
