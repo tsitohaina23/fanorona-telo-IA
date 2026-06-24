@@ -1,19 +1,32 @@
 """
-MOTEUR D'IA - FIX TIE-BREAKER POUR ÉVITER LES MOUVEMENTS RÉPÉTITIFS
+MOTEUR D'IA - MINIMAX + ALPHA-BETA + ML (ROTE LEARNING)
+========================================================
+Niveaux de difficulté :
+  - Facile   : coup aléatoire
+  - Moyenne  : Minimax classique (profondeur 3, matrice)
+  - Difficile: Alpha-Beta + Bitboards (profondeur 7)
+  - ML       : Rote Learning (mémoire de parties) → fallback Alpha-Beta si état inconnu
 """
 import time
 import random
 from src.game_logic import (
-    conversion_plateau_vers_bitboards, verifier_alignement_bitboard, 
+    conversion_plateau_vers_bitboards, verifier_alignement_bitboard,
     ADJACENCES, idx_to_mat, mat_to_idx
 )
+import src.ml_engine as ml
+
+
+# ─────────────────────────────────────────────
+# GÉNÉRATION DES COUPS
+# ─────────────────────────────────────────────
 
 def generer_coups_possibles(plateau, phase, joueur):
     coups = []
     if phase == "Placement":
         for i in range(3):
             for j in range(3):
-                if plateau[i][j] == 0: coups.append((i, j))
+                if plateau[i][j] == 0:
+                    coups.append((i, j))
     else:
         for i in range(3):
             for j in range(3):
@@ -25,11 +38,21 @@ def generer_coups_possibles(plateau, phase, joueur):
                             coups.append((i, j, ni, nj))
     return coups
 
+
+# ─────────────────────────────────────────────
+# ÉVALUATION CLASSIQUE (pour Minimax)
+# ─────────────────────────────────────────────
+
 def evaluer_plateau_classique(plateau, ami, ennemi):
     import src.game_logic as gl
-    if gl.verifier_alignement(plateau, ami): return 100
+    if gl.verifier_alignement(plateau, ami):   return  100
     if gl.verifier_alignement(plateau, ennemi): return -100
     return 0
+
+
+# ─────────────────────────────────────────────
+# MINIMAX (niveau Moyenne)
+# ─────────────────────────────────────────────
 
 def minimax(plateau, phase, profondeur, est_max, pions_places, ami, ennemi):
     score = evaluer_plateau_classique(plateau, ami, ennemi)
@@ -37,8 +60,9 @@ def minimax(plateau, phase, profondeur, est_max, pions_places, ami, ennemi):
         return score
 
     joueur = ami if est_max else ennemi
-    coups = generer_coups_possibles(plateau, phase, joueur)
-    if not coups: return 0
+    coups  = generer_coups_possibles(plateau, phase, joueur)
+    if not coups:
+        return 0
 
     if est_max:
         meilleur = -1000
@@ -67,22 +91,31 @@ def minimax(plateau, phase, profondeur, est_max, pions_places, ami, ennemi):
                 plateau[c[0]][c[1]], plateau[c[2]][c[3]] = ennemi, 0
         return pire
 
+
+# ─────────────────────────────────────────────
+# ALPHA-BETA + BITBOARDS (niveau Difficile)
+# ─────────────────────────────────────────────
+
 def alpha_beta_bitboard(b_ami, b_ennemi, phase, profondeur, alpha, beta, est_max, count_pions):
-    if verifier_alignement_bitboard(b_ami): return 1000 + profondeur
+    if verifier_alignement_bitboard(b_ami):    return  1000 + profondeur
     if verifier_alignement_bitboard(b_ennemi): return -1000 - profondeur
     if profondeur == 0:
         score = 0
-        if (b_ami & (1 << 4)): score += 15
-        if (b_ennemi & (1 << 4)): score -= 15
+        if b_ami    & (1 << 4): score += 15
+        if b_ennemi & (1 << 4): score -= 15
         return score
 
     occupé = b_ami | b_ennemi
+
     if phase == "Placement":
         if est_max:
             val = -10000
             for idx in range(9):
                 if not (occupé & (1 << idx)):
-                    val = max(val, alpha_beta_bitboard(b_ami | (1 << idx), b_ennemi, "Mouvement" if count_pions + 1 >= 6 else "Placement", profondeur - 1, alpha, beta, False, count_pions + 1))
+                    val = max(val, alpha_beta_bitboard(
+                        b_ami | (1 << idx), b_ennemi,
+                        "Mouvement" if count_pions + 1 >= 6 else "Placement",
+                        profondeur - 1, alpha, beta, False, count_pions + 1))
                     alpha = max(alpha, val)
                     if beta <= alpha: break
             return val
@@ -90,7 +123,10 @@ def alpha_beta_bitboard(b_ami, b_ennemi, phase, profondeur, alpha, beta, est_max
             val = 10000
             for idx in range(9):
                 if not (occupé & (1 << idx)):
-                    val = min(val, alpha_beta_bitboard(b_ami, b_ennemi | (1 << idx), "Mouvement" if count_pions + 1 >= 6 else "Placement", profondeur - 1, alpha, beta, True, count_pions + 1))
+                    val = min(val, alpha_beta_bitboard(
+                        b_ami, b_ennemi | (1 << idx),
+                        "Mouvement" if count_pions + 1 >= 6 else "Placement",
+                        profondeur - 1, alpha, beta, True, count_pions + 1))
                     beta = min(beta, val)
                     if beta <= alpha: break
             return val
@@ -102,7 +138,9 @@ def alpha_beta_bitboard(b_ami, b_ennemi, phase, profondeur, alpha, beta, est_max
                     for dest in ADJACENCES[src]:
                         if not (occupé & (1 << dest)):
                             nb_ami = (b_ami & ~(1 << src)) | (1 << dest)
-                            val = max(val, alpha_beta_bitboard(nb_ami, b_ennemi, "Mouvement", profondeur - 1, alpha, beta, False, count_pions))
+                            val = max(val, alpha_beta_bitboard(
+                                nb_ami, b_ennemi, "Mouvement",
+                                profondeur - 1, alpha, beta, False, count_pions))
                             alpha = max(alpha, val)
                             if beta <= alpha: break
             return val
@@ -113,28 +151,41 @@ def alpha_beta_bitboard(b_ami, b_ennemi, phase, profondeur, alpha, beta, est_max
                     for dest in ADJACENCES[src]:
                         if not (occupé & (1 << dest)):
                             nb_ennemi = (b_ennemi & ~(1 << src)) | (1 << dest)
-                            val = min(val, alpha_beta_bitboard(b_ami, nb_ennemi, "Mouvement", profondeur - 1, alpha, beta, True, count_pions))
+                            val = min(val, alpha_beta_bitboard(
+                                b_ami, nb_ennemi, "Mouvement",
+                                profondeur - 1, alpha, beta, True, count_pions))
                             beta = min(beta, val)
                             if beta <= alpha: break
             return val
 
+
+# ─────────────────────────────────────────────
+# FONCTION PRINCIPALE (appelée par ui_components)
+# ─────────────────────────────────────────────
+
 def simuler_calcul_ia(plateau, difficulte, role_ia=2):
+    """
+    Point d'entrée unique pour tous les niveaux.
+    Retourne (coup_choisi, temps_ms).
+    """
     start_time = time.perf_counter()
-    ami = role_ia
+    ami    = role_ia
     ennemi = 1 if ami == 2 else 2
-    
+
     pions_actuels = sum(1 for i in range(3) for j in range(3) if plateau[i][j] != 0)
     phase = "Placement" if pions_actuels < 6 else "Mouvement"
-    
+
     coups = generer_coups_possibles(plateau, phase, joueur=ami)
     if not coups:
         return None, (time.perf_counter() - start_time) * 1000
 
     meilleurs_coups = []
 
+    # ── NIVEAU FACILE : aléatoire ────────────────────────────────────────
     if difficulte == "Facile":
         meilleurs_coups = coups
 
+    # ── NIVEAU MOYENNE : Minimax profondeur 3 ───────────────────────────
     elif difficulte == "Moyenne":
         meilleur_score = -10000
         for c in coups:
@@ -146,37 +197,83 @@ def simuler_calcul_ia(plateau, difficulte, role_ia=2):
                 plateau[c[0]][c[1]], plateau[c[2]][c[3]] = 0, ami
                 score = minimax(plateau, phase, 3, False, pions_actuels, ami, ennemi)
                 plateau[c[0]][c[1]], plateau[c[2]][c[3]] = ami, 0
-            
+
             if score > meilleur_score:
-                meilleur_score = score
+                meilleur_score  = score
                 meilleurs_coups = [c]
             elif score == meilleur_score:
                 meilleurs_coups.append(c)
 
-    else: # Difficile (Alpha-Beta avec brise-égalité)
-        b1, b2 = conversion_plateau_vers_bitboards(plateau)
-        b_ami = b1 if ami == 1 else b2
+    # ── NIVEAU DIFFICILE : Alpha-Beta + Bitboards profondeur 7 ──────────
+    elif difficulte == "Difficile":
+        b1, b2  = conversion_plateau_vers_bitboards(plateau)
+        b_ami    = b1 if ami == 1 else b2
         b_ennemi = b2 if ami == 1 else b1
-        
+
         meilleur_score = -100000
         for c in coups:
             if phase == "Placement":
-                idx = mat_to_idx(c[0], c[1])
-                score = alpha_beta_bitboard(b_ami | (1 << idx), b_ennemi, "Mouvement" if pions_actuels + 1 >= 6 else "Placement", 7, -100000, 100000, False, pions_actuels + 1)
+                idx   = mat_to_idx(c[0], c[1])
+                score = alpha_beta_bitboard(
+                    b_ami | (1 << idx), b_ennemi,
+                    "Mouvement" if pions_actuels + 1 >= 6 else "Placement",
+                    7, -100000, 100000, False, pions_actuels + 1)
             else:
-                src = mat_to_idx(c[0], c[1])
-                dest = mat_to_idx(c[2], c[3])
+                src   = mat_to_idx(c[0], c[1])
+                dest  = mat_to_idx(c[2], c[3])
                 nb_ami = (b_ami & ~(1 << src)) | (1 << dest)
-                score = alpha_beta_bitboard(nb_ami, b_ennemi, "Mouvement", 7, -100000, 100000, False, pions_actuels)
-            
+                score = alpha_beta_bitboard(
+                    nb_ami, b_ennemi, "Mouvement",
+                    7, -100000, 100000, False, pions_actuels)
+
             if score > meilleur_score:
-                meilleur_score = score
+                meilleur_score  = score
                 meilleurs_coups = [c]
             elif score == meilleur_score:
                 meilleurs_coups.append(c)
 
-    # FIX FIX : Choisit aléatoirement un coup parmi ceux ayant la même note maximale absolue
-    # Cela évite que deux IA figent le jeu sur un seul chemin monotone répétitif
+    # ── NIVEAU ML : Rote Learning → fallback Alpha-Beta ─────────────────
+    elif difficulte == "ML":
+        # Étape 1 : entraîner si pas encore fait (une seule fois par session)
+        if not ml.is_entraine():
+            ml.entrainer()
+
+        # Étape 2 : consulter la mémoire
+        coup_ml = ml.choisir_coup_ml(plateau, phase, ami)
+
+        if coup_ml is not None:
+            # État connu et historiquement gagnant → on le joue directement
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            return coup_ml, elapsed_ms
+
+        # Étape 3 : fallback Alpha-Beta profondeur 7 (état inconnu ou score négatif)
+        b1, b2  = conversion_plateau_vers_bitboards(plateau)
+        b_ami    = b1 if ami == 1 else b2
+        b_ennemi = b2 if ami == 1 else b1
+
+        meilleur_score = -100000
+        for c in coups:
+            if phase == "Placement":
+                idx   = mat_to_idx(c[0], c[1])
+                score = alpha_beta_bitboard(
+                    b_ami | (1 << idx), b_ennemi,
+                    "Mouvement" if pions_actuels + 1 >= 6 else "Placement",
+                    7, -100000, 100000, False, pions_actuels + 1)
+            else:
+                src   = mat_to_idx(c[0], c[1])
+                dest  = mat_to_idx(c[2], c[3])
+                nb_ami = (b_ami & ~(1 << src)) | (1 << dest)
+                score = alpha_beta_bitboard(
+                    nb_ami, b_ennemi, "Mouvement",
+                    7, -100000, 100000, False, pions_actuels)
+
+            if score > meilleur_score:
+                meilleur_score  = score
+                meilleurs_coups = [c]
+            elif score == meilleur_score:
+                meilleurs_coups.append(c)
+
+    # Brise-égalité aléatoire (évite les répétitions monotones)
     coup_selectionne = random.choice(meilleurs_coups) if meilleurs_coups else random.choice(coups)
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000

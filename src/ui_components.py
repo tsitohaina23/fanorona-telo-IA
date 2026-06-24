@@ -10,7 +10,7 @@ from src.ia_engine import simuler_calcul_ia
 
 def render_interface():
     options_jeux = ["Humain vs Machine", "Humain vs Humain", "IA vs IA"]
-    options_diff = ["Facile", "Moyenne", "Difficile"]
+    options_diff = ["Facile", "Moyenne", "Difficile", "ML"]
 
     # --- BARRE CONFIGURATION ---
     st.markdown("""
