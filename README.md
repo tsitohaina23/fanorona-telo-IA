@@ -60,23 +60,23 @@ Notre équipe a principalement exploité **Gemini** comme assistant IA afin d’
 
 ## - Section 5 : Modélisation et Algorithmes de l'IA du Jeu
 
-1. Explication scientifique de l'intelligence artificielle que vous avez conçue et implémentée :
+### Explication scientifique de l'intelligence artificielle que nous avons conçue et implémentée :
 
-  1. Représentation de l'état du plateau : Comment avez-vous représenté le plateau 3x3 et ses lignes diagonales/orthogonales (Structures de Données).
+   Notre IA a été conçue comme un moteur de recherche adversariale capable de choisir les meilleurs coups à partir de l'état courant du plateau. Les niveaux Facile et Moyen reposent sur une logique de recherche simple, tandis que le niveau Difficile combine Minimax, Alpha-Beta et une représentation par bitboards pour accélérer le calcul et améliorer la qualité des décisions. Le mode ML complète cette approche par une mémoire de certains états déjà rencontrés, ce qui permet à l'IA de réagir plus efficacement dans des situations similaires.
 
-  2. Fonctionnement de votre Minimax et définition de la fonction d'évaluation.
+### Représentation de l'état du plateau :
+      Le plateau est représenté sous forme de matrice 3x3 où chaque case peut contenir un pion libre, un pion du joueur 1 ou un pion du joueur 2. Pour améliorer la rapidité des calculs, cette structure est également encodée sous forme de bitboards, ce qui facilite la détection des alignements et l'évaluation des positions.
 
-  3. Les techniques avancées utilisées (le cas échéant) :
+### Fonctionnement du Minimax et de la fonction d'évaluation :
+      Le Minimax explore les différentes branches possibles du jeu en supposant que chaque joueur joue de manière optimale. À chaque profondeur, l'algorithme attribue une valeur à une position selon sa qualité pour le joueur courant. Cette évaluation repose sur plusieurs critères : la présence d'alignements potentiels, les menaces immédiates, le contrôle des cases clés et la possibilité de bloquer l'adversaire. L'élagage Alpha-Beta réduit ensuite le nombre de branches à explorer sans diminuer significativement la qualité du choix.
 
-  	1. Table de transposition pour stocker les états déjà évalués et éviter les calculs redondants.
+### Techniques avancées utilisées :
+      - Alpha-Beta pruning : optimisation du Minimax pour éviter de parcourir des branches inutiles.
+      - Bitboards : représentation compacte des pions sous forme de bits pour une évaluation plus rapide.
+      - Rote learning : mémoire simple utilisée dans le mode ML pour retenir certains états rencontrés et améliorer les décisions futures.
+      - Recherche en profondeur limitée : adaptation du temps de calcul selon le niveau de difficulté choisi.
 
-	2. Opening book, c'est-à-dire une bibliothèque de coups d'ouverture prédéfinis.
-
-	3. bit à bit / bitboards.
-
-	4. Iterative deepening.
-
-	5. Machine Learning : Rote learning (mémorisation/indexation), modèle de classification, Q-Learning...
+   En résumé, notre IA combine recherche, évaluation heuristique et optimisation algorithmique pour proposer des coups cohérents, rapides et stratégiques tout au long de la partie.
 
 ## - Section 6 : Analyses de Performances
 
