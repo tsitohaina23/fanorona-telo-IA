@@ -1,12 +1,92 @@
-/* Personnalisation légère de l'interface Streamlit */
-.stButton > button {
-    height: 80px;
-    font-size: 24px;
-    border-radius: 10px;
-    background-color: #f0f2f6;
-    transition: background-color 0.3s;
+/* Container principal responsive */
+.board-wrapper {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    background-color: #f7e1be; /* Couleur bois/sable de designe.jpg */
+    border: 4px solid #5c3a21;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-sizing: border-box;
 }
-.stButton > button:hover {
-    background-color: #e0e2e6;
-    border-color: #ff4b4b;
+
+/* Grille des 9 intersections superposée */
+.nodes-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    z-index: 10;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Zone réceptive autour de chaque intersection */
+.node-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Style des Pions Tactiles */
+.game-token {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.game-token:hover {
+    transform: scale(1.2);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* Couleur Joueur 1 (Humain) : Rouge Royal */
+.token-j1 {
+    background: radial-gradient(circle at 35% 35%, #ff4d4d, #b30000);
+    border: 2px solid #800000;
+}
+
+/* Couleur Joueur 2 (IA) : Bleu Cyan */
+.token-j2 {
+    background: radial-gradient(circle at 35% 35%, #3399ff, #0044cc);
+    border: 2px solid #002266;
+}
+
+/* Intersections vides interactives (Discrètes) */
+.token-empty {
+    width: 16px;
+    height: 16px;
+    background-color: #5c3a21;
+    border: 2px solid #f7e1be;
+    opacity: 0.6;
+}
+
+.token-empty:hover {
+    opacity: 1;
+    background-color: #ff9900;
+    transform: scale(1.4);
+}
+
+/* Style si un pion est sélectionné pour le mouvement */
+.token-selected {
+    outline: 3px solid #ff9900;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }

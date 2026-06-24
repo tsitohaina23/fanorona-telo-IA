@@ -1,86 +1,240 @@
+"""
+INTERFACE DES MODULES GRAPHIQUES STREAMLIT - INTERFACE OPTIMISÉE POUR LE FANORONA TELO
+"""
 import streamlit as st
 import pandas as pd
-from src.game_logic import verifier_alignement
+import time
+from src.components.fanorona_board import fanorona_board 
+from src.game_logic import verifier_alignement, est_mouvement_valide, est_bloque
 from src.ia_engine import simuler_calcul_ia
+from src.history import push_history, undo_state, redo_state
+
+def initialiser_session_state():
+    """Garantit que toutes les variables de session cruciales existent au démarrage."""
+    valeurs_par_defaut = {
+        "mode_jeu": "Humain vs Machine",
+        "difficulte_ia": "Moyenne",
+        "plateau": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+        "phase": "Placement",
+        "tour": 1,
+        "pions_places": 0,
+        "gagnant": None,
+        "pion_selectionne": None,
+        "stats_perf": [],
+        "dernier_coup_traite": None,
+        "history": [],
+        "redo_stack": []
+    }
+    for cle, valeur in valeurs_par_defaut.items():
+        if cle not in st.session_state:
+            st.session_state[cle] = valeur
 
 def render_interface():
-    # Affichage des informations d'état de la partie
-    if st.session_state.gagnant:
-        st.balloons()
-        st.success(f"🏆 Victoire du {st.session_state.gagnant} !")
-        if st.button("🔄 Recommencer une partie"):
-            st.session_state.clear()
-            st.rerun()
-        return
+    # 1. Sécurisation de l'état initial
+    initialiser_session_state()
 
-    st.write(f"**Phase :** {st.session_state.phase} | **Tour :** {'Joueur 1 (❌)' if st.session_state.tour == 1 else 'IA (⭕)'}")
+    options_jeux = ["Humain vs Machine", "Humain vs Humain", "IA vs IA"]
+    options_diff = ["Facile", "Moyenne", "Difficile", "ML"]
 
-    # -------------------------------------------------------------------------
-    # DESSIN DU PLATEAU DE JEU 3x3
-    # -------------------------------------------------------------------------
-    plateau = st.session_state.plateau
+    # --- BARRE CONFIGURATION ---
+    st.markdown("""
+        <div style="text-align:center; margin-bottom:5px;">
+            <span style="color:#4a2e1b; font-weight:bold; font-size:12px; text-transform:uppercase; letter-spacing:1px;">
+                fanorona-telo développer par lémurien-codeur (ISPM HACKATHON)
+            </span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    c_mode, c_diff, c_tour = st.columns([2, 1, 1])
     
-    for i in range(3):
-        cols = st.columns(3)
-        for j in range(3):
-            valeur = plateau[i][j]
-            label = "⬜" if valeur == 0 else ("❌" if valeur == 1 else "⭕")
-            
-            # Action au clic sur une intersection
-            if cols[j].button(label, key=f"cell_{i}_{j}", use_container_width=True):
-                if st.session_state.tour == 1 and valeur == 0:  # Tour de l'humain
-                    # Application de la règle selon la phase actuelle
-                    if st.session_state.phase == "Placement":
-                        st.session_state.plateau[i][j] = 1
-                        st.session_state.pions_places += 1
-                        
-                        # Vérification immédiate de victoire en phase de placement
-                        if verifier_alignement(st.session_state.plateau, 1):
-                            st.session_state.gagnant = "Joueur 1 (❌)"
-                        else:
-                            # Changement de tour
-                            st.session_state.tour = 2
-                            
-                        # Fin de la phase de placement après 6 pions posés au total
-                        if st.session_state.pions_places >= 6:
-                            st.session_state.phase = "Mouvement"
-                            
-                        st.rerun()
+    with c_mode:
+        mode_choisi = st.selectbox(
+            "Mode", options=options_jeux, 
+            index=options_jeux.index(st.session_state.mode_jeu), label_visibility="collapsed"
+        )
+        if mode_choisi != st.session_state.mode_jeu:
+            # On réinitialise proprement via un dictionnaire pour éviter les effets de bord
+            st.session_state.mode_jeu = mode_choisi
+            st.session_state.plateau = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+            st.session_state.phase = "Placement"
+            st.session_state.tour = 1
+            st.session_state.pions_places = 0
+            st.session_state.gagnant = None
+            st.session_state.pion_selectionne = None
+            st.session_state.stats_perf = []
+            st.session_state.history = []
+            st.session_state.redo_stack = []
+            st.rerun()
 
-    # -------------------------------------------------------------------------
-    # DÉCLENCHEMENT AUTOMATIQUE DE L'IA (SI C'EST SON TOUR)
-    # -------------------------------------------------------------------------
-    if st.session_state.tour == 2 and not st.session_state.gagnant:
-        with st.spinner("L'IA réfléchit à son meilleur coup..."):
-            coup, temps_ms = simuler_calcul_ia(st.session_state.plateau, "Difficile")
+    with c_diff:
+        desactive = (st.session_state.mode_jeu == "Humain vs Humain")
+        diff_choisie = st.selectbox(
+            "Niveau", options=options_diff,
+            index=options_diff.index(st.session_state.difficulte_ia),
+            disabled=desactive, label_visibility="collapsed"
+        )
+        if diff_choisie != st.session_state.difficulte_ia:
+            st.session_state.difficulte_ia = diff_choisie
+
+    with c_tour:
+        if st.session_state.tour == 1:
+            st.markdown('<div style="background-color:#404040; color:white; padding:8px; border-radius:8px; text-align:center; font-weight:bold; font-size:12px;">⚫ J1 (Noir)</div>', unsafe_allow_html=True)
+        else:
+            lbl = "Machine" if st.session_state.mode_jeu == "Humain vs Machine" else ("IA-2" if st.session_state.mode_jeu == "IA vs IA" else "⚪ J2")
+            st.markdown(f'<div style="background-color:#e0e0e0; color:#333; padding:8px; border-radius:8px; text-align:center; font-weight:bold; font-size:12px; border:1px solid #ccc;">⚪ {lbl}</div>', unsafe_allow_html=True)
+
+    # --- STATUS BANNER ---
+    if st.session_state.gagnant:
+        st.markdown(f"""
+        <div style="background-color:#d4edda; border: 2px solid #c3e6cb; padding:12px; border-radius:10px; color:#155724; text-align:center; margin-top:10px; margin-bottom:15px; font-weight:bold; font-size:16px;">
+            🏆 FIN DE PARTIE : {st.session_state.gagnant} a gagné !
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div style="background-color:#4a2e1b; padding:10px; border-radius:10px; color:white; text-align:center; margin-top:10px; margin-bottom:15px;">
+            <h5 style="margin:0; font-family:sans-serif;">Phase de Jeu Actuelle : {st.session_state.phase}</h5>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Premier push de l'historique au tout début si vide
+    if not st.session_state.history:
+        push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
+
+    # --- CONTROLES DE PARTIE ---
+    st.markdown(""" <div style="text-align: center; text-weight: Bold"> <h2> Contrôles de partie </h2> </div>""", unsafe_allow_html=True)
+    col_left, col_right = st.columns([1, 1])
+    with col_left:
+        # Désactivé aussi en mode IA vs IA car l'annulation n'a pas de sens quand deux robots s'affrontent en continu
+        btn_undo_disabled = len(st.session_state.history) <= 1 or st.session_state.mode_jeu == "IA vs IA"
+        if st.button("↺ Annuler le dernier coup", use_container_width=True, disabled=btn_undo_disabled):
+            if undo_state(st.session_state, st.session_state.history, st.session_state.redo_stack):
+                # En mode contre la machine, annuler le coup du joueur doit aussi annuler le coup de l'IA précédent
+                if st.session_state.mode_jeu == "Humain vs Machine" and len(st.session_state.history) > 1:
+                    undo_state(st.session_state, st.session_state.history, st.session_state.redo_stack)
+                st.rerun()
+    with col_right:
+        btn_redo_disabled = not st.session_state.redo_stack or st.session_state.mode_jeu == "IA vs IA"
+        if st.button("↻ Refaire le coup", use_container_width=True, disabled=btn_redo_disabled):
+            if redo_state(st.session_state, st.session_state.history, st.session_state.redo_stack):
+                if st.session_state.mode_jeu == "Humain vs Machine" and st.session_state.redo_stack:
+                    redo_state(st.session_state, st.session_state.history, st.session_state.redo_stack)
+                st.rerun()
+
+    # RENDU DU CANVAS GRAPHIC
+    coup_joueur = fanorona_board(
+        plateau=st.session_state.plateau,
+        phase=st.session_state.phase,
+        pion_selectionne=st.session_state.get("pion_selectionne"),
+        key="fanoron_telo_canvas_grid"
+    )
+
+    # --- LOGIQUE D'AUTOMATION DES TOURS POUR L'IA ---
+    ia_doit_calculer = (st.session_state.mode_jeu == "Humain vs Machine" and st.session_state.tour == 2) or \
+                       (st.session_state.mode_jeu == "IA vs IA")
+
+    if ia_doit_calculer and not st.session_state.gagnant:
+        role_ia = st.session_state.tour
+        
+        if st.session_state.phase == "Mouvement" and est_bloque(st.session_state.plateau, role_ia):
+            st.session_state.gagnant = f"IA-{'2' if role_ia == 1 else '1'} (Par blocage total)"
+            st.rerun()
+            return
+
+        with st.spinner(f"Calcul de l'IA-{role_ia} ({st.session_state.difficulte_ia})..."):
+            time.sleep(0.4) # Temporisation légère pour l'animation
+            
+            coup, temps_ms = simuler_calcul_ia(st.session_state.plateau, st.session_state.difficulte_ia, role_ia)
             
             if coup:
-                i, j = coup
-                st.session_state.plateau[i][j] = 2
-                st.session_state.pions_places += 1
-                st.session_state.stats_perf.append(temps_ms)
-                
-                # Vérification de victoire pour l'IA
-                if verifier_alignement(st.session_state.plateau, 2):
-                    st.session_state.gagnant = "Intelligence Artificielle (⭕)"
+                # OPTIMISATION : On sauvegarde l'état AVANT que l'IA ne modifie le plateau
+                push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
+
+                if st.session_state.phase == "Placement":
+                    st.session_state.plateau[coup[0]][coup[1]] = role_ia
+                    st.session_state.pions_places += 1
                 else:
-                    st.session_state.tour = 1
-                    
+                    if len(coup) == 4:
+                        st.session_state.plateau[coup[0]][coup[1]] = 0
+                        st.session_state.plateau[coup[2]][coup[3]] = role_ia
+
+                st.session_state.stats_perf.append(temps_ms)
+                st.session_state.pion_selectionne = None
+                st.session_state.dernier_coup_traite = None 
+
+                if verifier_alignement(st.session_state.plateau, role_ia):
+                    st.session_state.gagnant = f"L'IA-{role_ia} ({'Noir' if role_ia == 1 else 'Blanc'})" if st.session_state.mode_jeu == "IA vs IA" else "L'IA (Machine)"
+                else:
+                    st.session_state.tour = 2 if role_ia == 1 else 1
+                
                 if st.session_state.pions_places >= 6:
                     st.session_state.phase = "Mouvement"
                     
                 st.rerun()
+                return
 
-    # -------------------------------------------------------------------------
-    # COMPOSANT SECTION 6 : ANALYSES DE PERFORMANCES (PANDAS)
-    # -------------------------------------------------------------------------
-    if st.session_state.stats_perf:
-        st.write("###  Section 6 : Métriques de l'IA")
-        df = pd.DataFrame(st.session_state.stats_perf, columns=["Temps de réponse (ms)"])
-        
-        c1, c2 = st.columns(2)
-        c1.metric("Temps Moyen de l'IA", f"{df['Temps de réponse (ms)'].mean():.1f} ms")
-        c2.metric("Total Coups Joués", len(df))
-        
-        with st.expander("Voir le tableau des données brutes"):
-            st.dataframe(df)
+    # --- CAPTURE DES CLICS HUMAINS ---
+    if not st.session_state.gagnant and coup_joueur is not None and coup_joueur != st.session_state.dernier_coup_traite:
+        st.session_state.dernier_coup_traite = coup_joueur
+        i, j = coup_joueur['row'], coup_joueur['col']
+        valeur_case = st.session_state.plateau[i][j]
+        humain = st.session_state.tour
+
+        if st.session_state.phase == "Placement" and valeur_case == 0:
+            push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
+            st.session_state.plateau[i][j] = humain
+            st.session_state.pions_places += 1
+            if verifier_alignement(st.session_state.plateau, humain):
+                st.session_state.gagnant = f"Joueur {humain}"
+            else:
+                st.session_state.tour = 2 if humain == 1 else 1
+            if st.session_state.pions_places >= 6:
+                st.session_state.phase = "Mouvement"
+            st.rerun()
+            return
+            
+        elif st.session_state.phase == "Mouvement":
+            selection = st.session_state.get("pion_selectionne")
+            if valeur_case == humain:
+                st.session_state.pion_selectionne = (i, j)
+                st.rerun()
+                return
+            elif valeur_case == 0 and selection:
+                oi, oj = selection
+                if est_mouvement_valide(oi, oj, i, j):
+                    push_history(st.session_state, st.session_state.history, st.session_state.redo_stack)
+                    st.session_state.plateau[oi][oj] = 0
+                    st.session_state.plateau[i][j] = humain
+                    st.session_state.pion_selectionne = None
+                    if verifier_alignement(st.session_state.plateau, humain):
+                        st.session_state.gagnant = f"Joueur {humain}"
+                    else:
+                        st.session_state.tour = 2 if humain == 1 else 1
+                    st.rerun()
+                    return
+
+    # --- DESIGN DU BOUTON RESET ---
+    if st.session_state.gagnant:
+        st.balloons()
+        if st.button("🔄 Lancer un nouveau match", use_container_width=True, type="primary"):
+            m, d = st.session_state.mode_jeu, st.session_state.difficulte_ia
+            st.session_state.clear()
+            st.session_state.mode_jeu = m
+            st.session_state.difficulte_ia = d
+            st.session_state.plateau = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+            st.session_state.phase = "Placement"
+            st.session_state.tour = 1
+            st.session_state.pions_places = 0
+            st.session_state.stats_perf = []
+            st.rerun()
+
+    # --- SECTION ANALYTIQUE ---
+    if st.session_state.stats_perf and st.session_state.mode_jeu != "Humain vs Humain":
+        st.write("---")
+        st.write("### 📊 Section 6 : Évaluation analytique de l'IA")
+        df = pd.DataFrame(st.session_state.stats_perf, columns=["Temps"])
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Dernier calcul", f"{st.session_state.stats_perf[-1]:.2f} ms")
+        c2.metric("Vitesse moyenne", f"{df['Temps'].mean():.2f} ms")
+        c3.metric("Tours simulés", len(df))
+        st.line_chart(df, height=130)
