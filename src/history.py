@@ -29,13 +29,13 @@ def push_history(state, history, redo_stack):
 
 
 def undo_state(state, history, redo_stack):
-    if len(history) <= 1:
+    if not history:
         return False
 
     current_snapshot = snapshot_state(state)
     redo_stack.append(current_snapshot)
-    history.pop()
-    restore_state(state, history[-1])
+    previous_snapshot = history.pop()
+    restore_state(state, previous_snapshot)
     return True
 
 
@@ -43,6 +43,7 @@ def redo_state(state, history, redo_stack):
     if not redo_stack:
         return False
 
-    history.append(redo_stack.pop())
-    restore_state(state, history[-1])
+    next_snapshot = redo_stack.pop()
+    history.append(snapshot_state(state))
+    restore_state(state, next_snapshot)
     return True

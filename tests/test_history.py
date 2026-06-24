@@ -34,6 +34,36 @@ class HistoryTests(unittest.TestCase):
         self.assertEqual(state["pions_places"], 1)
         self.assertEqual(state["tour"], 2)
 
+    def test_undo_after_second_move_restores_previous_state(self):
+        state = {
+            "plateau": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            "phase": "Placement",
+            "tour": 1,
+            "pions_places": 0,
+            "gagnant": None,
+            "pion_selectionne": None,
+        }
+
+        history = []
+        redo_stack = []
+
+        push_history(state, history, redo_stack)
+
+        state["plateau"][0][0] = 1
+        state["pions_places"] = 1
+        state["tour"] = 2
+
+        push_history(state, history, redo_stack)
+        state["plateau"][0][1] = 2
+        state["pions_places"] = 2
+        state["tour"] = 1
+
+        self.assertTrue(undo_state(state, history, redo_stack))
+        self.assertEqual(state["plateau"][0][0], 1)
+        self.assertEqual(state["plateau"][0][1], 0)
+        self.assertEqual(state["pions_places"], 1)
+        self.assertEqual(state["tour"], 2)
+
 
 if __name__ == "__main__":
     unittest.main()
