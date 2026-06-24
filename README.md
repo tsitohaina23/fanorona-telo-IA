@@ -10,7 +10,7 @@ https://ispm-edu.com
 
 | 		**Nom Complet**                       | **Numéro d'étudiant** |  **Classe** | **Rôle précis pour ce hackathon** |
 |-------------------------------------------------|-------------------|---------|-------------------------------|
-| RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 				                |
+| RANAIVONOHATRA Mahentsoa Akel                   | 	   02	      | ESIIA 4 | 		Tech Lead  		                |
 | RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | 				                |
 | ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | 				                |
 | RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
