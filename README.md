@@ -14,9 +14,9 @@ https://ispm-edu.com
 | RAJOELISOLO Sitraka Tsitohaina                  | 	   05	      | ESIIA 4 | Développeur Backend et Développeur IA         |
 | ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | Integration de l'algorithme ML		    |
 | RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | Développeur Frontend	                      |
+|Razafimanantsoa Betina					  |	   23		| ESIIA 4 | Vérification final			          |
 | TANG Fakanah Randy                              | 	   27	      | ESIIA 4 | Développeur Backend		                |
 | LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | Développeur IA                                |
-|Razafimanantsoa Betina					  |	   23		| ESIIA 4 | Vérification final			          |
 
 ## - Section 2 : Description du Travail Réalisé
 
