@@ -15,8 +15,8 @@ https://ispm-edu.com
 | ANDRISOAMALALA Volakanto Landréa                | 	   10	      | ESIIA 4 | Integration de l'algorithme ML				                |
 | RAMESON Andrianarinosy Imanoela Fiderana Ny Avo | 	   12	      | ESIIA 4 | 				                |
 | TANG Fakanah Randy                              | 	   27	      | ESIIA 4 | 				                |
-| LEONARD Jamaviston Lucas                        | 	   36	      | ESIIA 4 | Développeur IA                |
-|-------------------------------------------------|-------------------|---------|-------------------------------|
+| LEONARD Jamaviston Lucas                        | 	   36	      | ESII A 4| Développeur IA                |
+|Razafimanantsoa Betina							|			23			|	ESII A 4|Vérification final			|
 
 ## - Section 2 : Description du Travail Réalisé
 
@@ -55,9 +55,8 @@ streamlit run app.py
 
 ## - Section 4 : Outils d'Aide IA Utilisés
 
-1. Explication de la manière dont votre équipe a exploité les assistants IA (ex. GitHub Copilot, ChatGPT, Claude, etc.) pour accélérer le développement :
+Notre équipe a principalement exploité **Gemini** comme assistant IA afin d’accélérer le développement du projet. Il a été utilisé pour la génération de portions de code, la proposition d’une structure de projet cohérente et bien organisée, ainsi que pour la résolution de certains problèmes de débogage rencontrés au cours du développement. L’assistant nous a également fourni diverses suggestions concernant les choix techniques, l’organisation des fonctionnalités et les différentes étapes du processus de réalisation. Son utilisation nous a permis de gagner du temps, d’améliorer la qualité du code et d’adopter une démarche de développement plus efficace.
 
-2. Exemples d'utilisation (écriture d'algorithmes, génération de tests rapides, débogage, CSS, génération d'images, génération de documentation) et retour d'expérience sur le gain de temps obtenu.
 
 ## - Section 5 : Modélisation et Algorithmes de l'IA du Jeu
 
